@@ -71,12 +71,10 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Final Score: $score/$max points**" >> $GITHUB_STEP_SUMMARY
 
-      - name: Report grade to Classroom
+      - name: Report to Autograding
         if: always()
-        uses: LouisBrunner/checks-action@v2.0.0
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          Points: ${{ steps.score.outputs.score }}/${{ steps.score.outputs.max }}
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: Autograding
-          conclusion: ${{ steps.score.outputs.score >= 40 && 'success' || 'failure' }}
-          output: |
-            {"summary":"Points: ${{ steps.score.outputs.score }}/${{ steps.score.outputs.max }}"}
+          runners: run-autograding-tests
