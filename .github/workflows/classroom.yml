@@ -1,0 +1,26 @@
+name: Autograding Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # jeśli niektóre testy mają własny setup w autograding.json, ten krok i tak nie przeszkadza
+      - name: Install requirements (best effort)
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+
+      # to jest klucz: ten action automatycznie czyta .github/classroom/autograding.json
+      - name: Run autograding
+        uses: education/autograding@v1
+
