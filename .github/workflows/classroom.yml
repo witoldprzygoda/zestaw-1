@@ -5,6 +5,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write      # ← to jest kluczowe, bez tego autograder nie może zapisać wyniku
+
 jobs:
   run-autograding-tests:
     runs-on: ubuntu-latest
@@ -15,12 +19,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      # jeśli niektóre testy mają własny setup w autograding.json, ten krok i tak nie przeszkadza
       - name: Install requirements (best effort)
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
 
-      # to jest klucz: ten action automatycznie czyta .github/classroom/autograding.json
       - name: Run autograding
         uses: education/autograding@v1
 
