@@ -16,6 +16,9 @@ MIASTA = [
 # - wyznaczenie miasta z najniższą i najwyższą temperaturą (nazwy i wartości) na podstawie zwróconej listy,
 # - przypisanie wyników do zmiennych: min_miasto, min_temp, max_miasto, max_temp.
 
-print("\n=== Podsumowanie ===")
-print("Najchłodniej:", min_miasto, ": ", min_temp, "°C")
-print("Najcieplej: ", max_miasto, ": ", max_temp, "°C")
+if __name__ == "__main__":
+    # twoj kod
+
+    print("\n=== Podsumowanie ===")
+    print("Najchłodniej:", min_miasto, ": ", min_temp, "°C")
+    print("Najcieplej: ", max_miasto, ": ", max_temp, "°C")
