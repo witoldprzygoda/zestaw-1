@@ -47,13 +47,40 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
 
-      - name: Calculate score
+      - name: Calculate and display score
         if: always()
         run: |
           score=0
-          if [ "${{ steps.zadanie1.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie2.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie4.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie5.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          echo "### 📊 Final Score: $score/40 points" >> $GITHUB_STEP_SUMMARY
-          echo "SCORE=$score" >> $GITHUB_ENV
+          max=40
+          echo "## 📊 Test Results" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.zadanie1.outcome }}" == "success" ]; then 
+            score=$((score + 10))
+            echo "✅ ZADANIE1: 10/10" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ ZADANIE1: 0/10" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.zadanie2.outcome }}" == "success" ]; then 
+            score=$((score + 10))
+            echo "✅ ZADANIE2: 10/10" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ ZADANIE2: 0/10" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.zadanie4.outcome }}" == "success" ]; then 
+            score=$((score + 10))
+            echo "✅ ZADANIE4: 10/10" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ ZADANIE4: 0/10" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.zadanie5.outcome }}" == "success" ]; then 
+            score=$((score + 10))
+            echo "✅ ZADANIE5: 10/10" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ ZADANIE5: 0/10" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Final Score: $score/$max points**" >> $GITHUB_STEP_SUMMARY
