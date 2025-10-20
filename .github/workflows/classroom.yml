@@ -1,9 +1,6 @@
 name: Autograding Tests
 
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: [push]
 
 permissions:
   contents: read
@@ -14,67 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Install requirements
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: Test ZADANIE1
-        id: zadanie1
-        run: python -m pytest -q ZADANIE1/tests
-        continue-on-error: true
-        timeout-minutes: 10
-
-      - name: Test ZADANIE2
-        id: zadanie2
-        run: python -m pytest -q ZADANIE2/tests
-        continue-on-error: true
-        timeout-minutes: 10
-
-      - name: Test ZADANIE4
-        id: zadanie4
-        run: python -m pytest -q ZADANIE4/tests
-        continue-on-error: true
-        timeout-minutes: 10
-
-      - name: Test ZADANIE5
-        id: zadanie5
-        run: python -m pytest -q ZADANIE5/tests
-        continue-on-error: true
-        timeout-minutes: 10
-
-      - name: Calculate score
-        if: always()
-        id: score
-        run: |
-          score=0
-          max=40
-          
-          if [ "${{ steps.zadanie1.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie2.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie4.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          if [ "${{ steps.zadanie5.outcome }}" == "success" ]; then score=$((score + 10)); fi
-          
-          echo "score=$score" >> $GITHUB_OUTPUT
-          echo "max=$max" >> $GITHUB_OUTPUT
-          
-          # Job Summary
-          echo "## 📊 Test Results" >> $GITHUB_STEP_SUMMARY
-          [ "${{ steps.zadanie1.outcome }}" == "success" ] && echo "✅ ZADANIE1: 10/10" >> $GITHUB_STEP_SUMMARY || echo "❌ ZADANIE1: 0/10" >> $GITHUB_STEP_SUMMARY
-          [ "${{ steps.zadanie2.outcome }}" == "success" ] && echo "✅ ZADANIE2: 10/10" >> $GITHUB_STEP_SUMMARY || echo "❌ ZADANIE2: 0/10" >> $GITHUB_STEP_SUMMARY
-          [ "${{ steps.zadanie4.outcome }}" == "success" ] && echo "✅ ZADANIE4: 10/10" >> $GITHUB_STEP_SUMMARY || echo "❌ ZADANIE4: 0/10" >> $GITHUB_STEP_SUMMARY
-          [ "${{ steps.zadanie5.outcome }}" == "success" ] && echo "✅ ZADANIE5: 10/10" >> $GITHUB_STEP_SUMMARY || echo "❌ ZADANIE5: 0/10" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Final Score: $score/$max points**" >> $GITHUB_STEP_SUMMARY
-
-      - name: Report to Autograding
-        if: always()
-        uses: classroom-resources/autograding-grading-reporter@v1
-        env:
-          Points: ${{ steps.score.outputs.score }}/${{ steps.score.outputs.max }}
-        with:
-          runners: run-autograding-tests
+      - run: pip install -r requirements.txt
+      - uses: education/autograding@v1
