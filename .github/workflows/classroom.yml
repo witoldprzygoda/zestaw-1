@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  checks: write      # ← to jest kluczowe, bez tego autograder nie może zapisać wyniku
+  checks: write
 
 jobs:
   run-autograding-tests:
@@ -19,10 +19,41 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install requirements (best effort)
+      - name: Install requirements
         run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run autograding
-        uses: education/autograding@v1
+      - name: Test ZADANIE1
+        id: zadanie1
+        run: python -m pytest -q ZADANIE1/tests
+        continue-on-error: true
+        timeout-minutes: 10
 
+      - name: Test ZADANIE2
+        id: zadanie2
+        run: python -m pytest -q ZADANIE2/tests
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: Test ZADANIE4
+        id: zadanie4
+        run: python -m pytest -q ZADANIE4/tests
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: Test ZADANIE5
+        id: zadanie5
+        run: python -m pytest -q ZADANIE5/tests
+        continue-on-error: true
+        timeout-minutes: 10
+
+      - name: Calculate score
+        if: always()
+        run: |
+          score=0
+          if [ "${{ steps.zadanie1.outcome }}" == "success" ]; then score=$((score + 10)); fi
+          if [ "${{ steps.zadanie2.outcome }}" == "success" ]; then score=$((score + 10)); fi
+          if [ "${{ steps.zadanie4.outcome }}" == "success" ]; then score=$((score + 10)); fi
+          if [ "${{ steps.zadanie5.outcome }}" == "success" ]; then score=$((score + 10)); fi
+          echo "### 📊 Final Score: $score/40 points" >> $GITHUB_STEP_SUMMARY
+          echo "SCORE=$score" >> $GITHUB_ENV
